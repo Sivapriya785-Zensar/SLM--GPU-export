@@ -1,0 +1,7 @@
+{
+  "files.exclude": {
+    "data/train.jsonl": true,
+    "data/val.jsonl": true,
+    "data/test.jsonl": true
+  }
+}

@@ -1,0 +1,43 @@
+{
+  "trained_at": "2026-09-08 23:19:57",
+  "stages": {
+    "network": {
+      "val_accuracy": 1.0,
+      "test_accuracy": 1.0
+    },
+    "code_Visa": {
+      "n_codes": 21,
+      "n_train": 2418,
+      "val_accuracy": 0.8963,
+      "val_top3_accuracy": 0.9519,
+      "val_macro_f1": 0.8952,
+      "test_accuracy": 0.9428,
+      "test_top3_accuracy": 0.9697,
+      "test_macro_f1": 0.9442
+    },
+    "code_Mastercard": {
+      "n_codes": 20,
+      "n_train": 2429,
+      "val_accuracy": 0.9375,
+      "val_top3_accuracy": 0.9743,
+      "val_macro_f1": 0.934,
+      "test_accuracy": 0.9452,
+      "test_top3_accuracy": 0.9658,
+      "test_macro_f1": 0.9452
+    },
+    "code_Amex": {
+      "n_codes": 24,
+      "n_train": 2421,
+      "val_accuracy": 0.9272,
+      "val_top3_accuracy": 0.9732,
+      "val_macro_f1": 0.9298,
+      "test_accuracy": 0.9367,
+      "test_top3_accuracy": 0.9567,
+      "test_macro_f1": 0.9382
+    }
+  },
+  "end_to_end": {
+    "test_accuracy_full_pipeline": 0.9415,
+    "test_accuracy_given_true_network": 0.9415
+  }
+}
