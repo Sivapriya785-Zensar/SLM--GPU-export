@@ -51,14 +51,21 @@ def set_model(name: str) -> None:
     MODEL = name
 
 
+AVAILABLE_MODELS = [
+    m.strip() for m in os.environ.get(
+        "SLM_AVAILABLE_MODELS", "dispute-slm:latest,disputeslm-v2:latest",
+    ).split(",") if m.strip()
+]
+
+
 def list_models() -> list[dict]:
-    """Every model Ollama currently has installed - what the Settings picker lists."""
-    with urllib.request.urlopen(f"{HOST}/api/tags", timeout=6) as r:
-        tags = json.load(r)
-    return [
-        {"name": m.get("name", ""), "size": m.get("size"), "modified_at": m.get("modified_at")}
-        for m in tags.get("models", [])
-    ]
+    """Models the Settings picker offers - a static list from SLM_AVAILABLE_MODELS
+    (comma-separated), not discovered live via Ollama's /api/tags. Switched from a
+    live query because that call could hang indefinitely on some Windows hosts when
+    Ollama's HTTP listener wedged, taking this endpoint (and the whole picker) down
+    with it. Set SLM_AVAILABLE_MODELS to whatever `ollama list` shows on this machine;
+    update it when you pull/create a new model there - no code change needed."""
+    return [{"name": name} for name in AVAILABLE_MODELS]
 
 
 def available() -> bool:

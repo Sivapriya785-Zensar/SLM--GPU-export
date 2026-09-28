@@ -87,6 +87,13 @@ Set env vars as needed (all optional, sensible defaults — see `slm/client.py`
 ```bash
 export SLM_MODEL="dispute-phi3-4ep:latest"   # default active model
 export OLLAMA_HOST="http://localhost:11434"  # only needed if Ollama isn't local
+
+# The Settings picker's model list is a static, comma-separated env var — NOT a live
+# query against Ollama. (An earlier version called Ollama's /api/tags on every page
+# load; on Windows that call could hang indefinitely if Ollama's HTTP listener ever
+# wedged, taking the whole picker down with it.) Set this to whatever `ollama list`
+# actually shows as installed on THIS machine:
+export SLM_AVAILABLE_MODELS="dispute-slm:latest,disputeslm-v2:latest"
 ```
 
 ```bash
@@ -97,9 +104,10 @@ Open `http://<gpu-server-ip>:8010`. The frontend is served by the same
 FastAPI process — no separate frontend server or build step.
 
 **Switching models without a restart:** open the "Model Settings" panel in
-the sidebar — it lists whatever `ollama list` shows on that machine (via
+the sidebar — it lists whatever `SLM_AVAILABLE_MODELS` names (via
 `GET /api/models`) and lets you pick the active one (`POST /api/settings`),
-live, without restarting the server.
+live, without restarting the server. Update `SLM_AVAILABLE_MODELS` (and
+restart the app) whenever you pull/create a new model on this machine.
 
 ## 7. Running it as a persistent service (recommended over `&`)
 
