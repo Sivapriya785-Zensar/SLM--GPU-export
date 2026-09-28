@@ -80,10 +80,9 @@ API, UI) reads them from `data/reason_code_kb.json`, the single source of truth.
 | `ml/classifier.py` | `DisputeClassifier.load().predict(payload)` — candidate model |
 | `kb/kb.py` | `KnowledgeBase` loader / lookup |
 | `slm/client.py` | Ollama client for `dispute-phi3` — `classify()` + `follow_up()` |
-| `app/main.py` | FastAPI service (`/api/classify`, `/api/chat`, …) + static UI |
-| `app/static/` | frontend (`index.html`, `styles.css`, `app.js`) |
-| `eval/confusions.py` | support-model per-network accuracy + confused pairs |
-| `eval/queries.py` | support-model accuracy on terse plain-English queries |
+| `app/main.py` | FastAPI service (`/api/classify`, `/api/chat`, `/api/models`, `/api/settings`, …) + static UI |
+| `app/static/` | frontend (`index.html`, `styles.css`, `app.js`) — includes a Settings panel to pick which installed Ollama model to use |
+| `GPU_DEPLOY.md` | how to run this on a GPU server |
 
 Env vars (all optional, sensible defaults): `SLM_MODEL`, `OLLAMA_HOST`,
 `SLM_TEMPERATURE`, `SLM_NUM_CTX`, `SLM_NUM_PREDICT`, `SLM_TIMEOUT_SECONDS`,
@@ -131,6 +130,8 @@ backend — there is no separate frontend server.)
 | `GET`  | `/api/code/{code}` | full KB entry for one reason code (standalone lookup, not used by `/api/classify`) |
 | `GET`  | `/api/networks` | reason-code catalogue grouped by network (standalone lookup) |
 | `GET`  | `/api/health` | SLM availability + KB / classifier status |
+| `GET`  | `/api/models` | models currently installed in Ollama + which one is active |
+| `POST` | `/api/settings` | `{ "model": "..." }` — switch the active Ollama model at runtime, no restart needed |
 
 `/api/classify` response: `reason_code`, `reason_label` and `category` (straight from
 the SLM's own JSON output — `null`/`null` if it fell back to ML-only), `slm_used`,
@@ -157,20 +158,6 @@ The SLM makes the final call, using this ranked list plus the KB definitions as 
 context — the ML model and KB are never consulted again after that.
 
 ---
-
-## Latest regression run (`eval/regression_test.py`)
-
-17 classification queries (the original 14-query set + 3 previously-flagged "struggle"
-cases) + a 2-turn follow-up, run against the live API:
-
-- **classification: 16/17 (0.94)**. The one consistent miss: a Mastercard hotel
-  no-show narrative gets `MA-4855` (Goods Not Provided) instead of `MA-4859`
-  (Addendum/No-Show) — the SLM overrides a correct ML top-candidate here.
-- **multi-turn bug found and fixed**: a follow-up turn could come back as raw JSON
-  instead of prose (the stored first-turn assistant message was JSON, which primed the
-  SLM to keep answering in JSON). Fixed by storing that turn as a natural-language
-  sentence, plus a defensive reformatter in `slm/client.py` (`_as_prose`) in case a
-  reply still slips into JSON. Retested clean on the same repro case.
 
 ## Notes / limitations
 
