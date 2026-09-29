@@ -11,3 +11,7 @@ venv/
 data/train.jsonl
 data/val.jsonl
 data/test.jsonl
+
+# experiment embedding caches - regenerable via experiments/*/embed_data.py, not
+# worth keeping in git
+experiments/**/emb_*.npy

@@ -1,0 +1,44 @@
+{
+  "trained_at": "2026-09-29 01:22:29",
+  "feature": "nomic-embed-text",
+  "stages": {
+    "network": {
+      "val_accuracy": 0.9963,
+      "test_accuracy": 0.9989
+    },
+    "code_Visa": {
+      "n_codes": 21,
+      "n_train": 2418,
+      "val_accuracy": 0.8815,
+      "val_top3_accuracy": 0.9259,
+      "val_macro_f1": 0.8864,
+      "test_accuracy": 0.9293,
+      "test_top3_accuracy": 0.9663,
+      "test_macro_f1": 0.9301
+    },
+    "code_Mastercard": {
+      "n_codes": 20,
+      "n_train": 2429,
+      "val_accuracy": 0.9228,
+      "val_top3_accuracy": 0.9596,
+      "val_macro_f1": 0.92,
+      "test_accuracy": 0.9281,
+      "test_top3_accuracy": 0.9623,
+      "test_macro_f1": 0.9258
+    },
+    "code_Amex": {
+      "n_codes": 24,
+      "n_train": 2421,
+      "val_accuracy": 0.9119,
+      "val_top3_accuracy": 0.9502,
+      "val_macro_f1": 0.9153,
+      "test_accuracy": 0.9167,
+      "test_top3_accuracy": 0.9433,
+      "test_macro_f1": 0.9173
+    }
+  },
+  "end_to_end": {
+    "test_accuracy_full_pipeline": 0.9235,
+    "test_accuracy_given_true_network": 0.9246
+  }
+}
