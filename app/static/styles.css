@@ -296,6 +296,72 @@ body {
 .send-btn:active { transform: translateY(1px); }
 .send-btn:disabled { opacity: .45; cursor: not-allowed; }
 
+/* ---------- saved chats (sidebar) ---------- */
+.saved-section {
+  position: relative;
+  z-index: 1;
+  margin-top: 18px;
+  min-height: 0;
+  flex: 1 1 auto;
+  display: flex;
+  flex-direction: column;
+}
+.saved-heading {
+  font-size: 11.5px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: .06em;
+  color: var(--muted);
+  margin-bottom: 8px;
+}
+.saved-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.saved-empty { font-size: 12.5px; color: var(--muted); }
+.saved-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(255, 255, 255, .78);
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  padding: 3px 4px 3px 10px;
+}
+.saved-item.active { border-color: var(--accent); }
+.saved-open {
+  flex: 1 1 auto;
+  min-width: 0;
+  text-align: left;
+  border: none;
+  background: transparent;
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--ink);
+  padding: 6px 0;
+  cursor: pointer;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.saved-del {
+  flex: 0 0 auto;
+  border: none;
+  background: transparent;
+  color: var(--muted);
+  cursor: pointer;
+  padding: 5px;
+  border-radius: 7px;
+  display: flex;
+}
+.saved-del:hover { color: var(--danger); background: var(--accent-tint); }
+
 /* ---------- settings modal ---------- */
 .settings-overlay {
   position: fixed;

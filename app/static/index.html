@@ -22,6 +22,13 @@
         New Chat
       </button>
 
+      <button id="saveChatBtn" class="settings-btn" type="button">
+        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.2">
+          <path d="M5 4h11l3 3v13H5z" stroke-linejoin="round" /><path d="M8 4v5h7V4M8 20v-6h8v6" stroke-linejoin="round" />
+        </svg>
+        Save Chat
+      </button>
+
       <button id="settingsBtn" class="settings-btn" type="button">
         <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.2">
           <circle cx="12" cy="12" r="3.2" />
@@ -29,6 +36,11 @@
         </svg>
         Model Settings
       </button>
+
+      <div class="saved-section">
+        <div class="saved-heading">Saved chats</div>
+        <ul id="savedList" class="saved-list"></ul>
+      </div>
 
       <svg class="blob-deco" viewBox="0 0 300 300" aria-hidden="true">
         <circle cx="90" cy="150" r="130" fill="#c41230" />
