@@ -12,7 +12,7 @@ Env:
   SLM_MODEL           default "dispute-phi3-4ep:latest"
   OLLAMA_HOST         default "http://localhost:11434"
   SLM_TEMPERATURE     default 0.05
-  SLM_NUM_CTX         default 2560   (context window, tokens — per spec)
+  SLM_NUM_CTX         default 3072   (context window, tokens — per spec)
   SLM_NUM_PREDICT     default 512    (max generated tokens - the free-text "explanation"
                                       field is generated last and can run long; too small
                                       a budget truncates it mid-sentence, which breaks the
@@ -30,7 +30,7 @@ import urllib.request
 MODEL = os.environ.get("SLM_MODEL", "dispute-phi3-4ep:latest")
 HOST = os.environ.get("OLLAMA_HOST", "http://localhost:11434").rstrip("/")
 TEMPERATURE = float(os.environ.get("SLM_TEMPERATURE", "0.05"))
-NUM_CTX = int(os.environ.get("SLM_NUM_CTX", "2560"))
+NUM_CTX = int(os.environ.get("SLM_NUM_CTX", "3072"))
 NUM_PREDICT = int(os.environ.get("SLM_NUM_PREDICT", "512"))
 DEFAULT_TIMEOUT = int(os.environ.get("SLM_TIMEOUT_SECONDS", "180"))
 
