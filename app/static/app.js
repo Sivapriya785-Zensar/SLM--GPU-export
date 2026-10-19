@@ -16,9 +16,6 @@ const settingsStatus = document.getElementById("settingsStatus");
 
 let conversationId = null;
 let busy = false;
-let transcript = [];
-let currentSavedId = null;
-const SAVED_KEY = "disputeSlm.savedChats";
 
 function esc(s) {
   return String(s == null ? "" : s).replace(/[&<>"']/g, (c) => (
@@ -34,8 +31,7 @@ function hideIntro() {
   if (intro) intro.style.display = "none";
 }
 
-function addUserBubble(text, networkTag, record = true) {
-  if (record) transcript.push({ k: "user", text, tag: networkTag || "" });
+function addUserBubble(text, networkTag) {
   hideIntro();
   const row = document.createElement("div");
   row.className = "msg user";
@@ -53,8 +49,7 @@ function addTyping() {
   return row;
 }
 
-function addTextBubble(text, isError, record = true) {
-  if (record) transcript.push({ k: "text", text, err: !!isError });
+function addTextBubble(text, isError) {
   const row = document.createElement("div");
   row.className = "msg assistant";
   row.innerHTML = `<div class="bubble${isError ? " err-bubble" : ""}">${esc(text)}</div>`;
@@ -63,8 +58,7 @@ function addTextBubble(text, isError, record = true) {
   return row;
 }
 
-function renderResult(d, record = true) {
-  if (record) transcript.push({ k: "result", d });
+function renderResult(d) {
   // Classification only — no resolution steps / evidence / advice. reason_label and
   // category come straight from the SLM's own answer (may be blank on an ML-only
   // fallback, where only the bare code is known).
@@ -142,9 +136,6 @@ function lockNetwork() {
 
 function resetConversation() {
   conversationId = null;
-  transcript = [];
-  currentSavedId = null;
-  renderSaved();
   messages.innerHTML = "";
   const div = document.createElement("div");
   div.id = "intro";
@@ -295,100 +286,5 @@ settingsSaveBtn.addEventListener("click", async () => {
     settingsSaveBtn.disabled = false;
   }
 });
-
-const saveChatBtn = document.getElementById("saveChatBtn");
-const savedList = document.getElementById("savedList");
-
-function readSaved() {
-  try {
-    return JSON.parse(localStorage.getItem(SAVED_KEY) || "[]");
-  } catch (err) {
-    return [];
-  }
-}
-
-function writeSaved(list) {
-  try {
-    localStorage.setItem(SAVED_KEY, JSON.stringify(list));
-    return true;
-  } catch (err) {
-    return false;
-  }
-}
-
-function renderSaved() {
-  const list = readSaved();
-  savedList.innerHTML = "";
-  if (!list.length) {
-    savedList.innerHTML = `<li class="saved-empty">No saved chats yet.</li>`;
-    return;
-  }
-  for (const c of list) {
-    const li = document.createElement("li");
-    li.className = "saved-item" + (c.id === currentSavedId ? " active" : "");
-    li.innerHTML = `
-      <button type="button" class="saved-open" title="${esc(c.title)}">${esc(c.title)}</button>
-      <button type="button" class="saved-del" aria-label="Delete saved chat">
-        <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.2">
-          <path d="M4 7h16M10 11v6M14 11v6M6 7l1 13h10l1-13M9 7V4h6v3" stroke-linecap="round" stroke-linejoin="round" />
-        </svg>
-      </button>`;
-    li.querySelector(".saved-open").addEventListener("click", () => openSaved(c.id));
-    li.querySelector(".saved-del").addEventListener("click", () => deleteSaved(c.id));
-    savedList.appendChild(li);
-  }
-}
-
-function saveCurrentChat() {
-  if (!transcript.length) {
-    addTextBubble("Nothing to save yet - send a message first.", false, false);
-    return;
-  }
-  const first = transcript.find((t) => t.k === "user");
-  const title = first ? first.text.slice(0, 40) + (first.text.length > 40 ? "…" : "") : "Chat";
-  const entry = {
-    id: currentSavedId || String(Date.now()),
-    title,
-    network: networkSelect.value,
-    conversationId,
-    transcript,
-    savedAt: Date.now(),
-  };
-  const list = readSaved().filter((c) => c.id !== entry.id);
-  list.unshift(entry);
-  if (!writeSaved(list)) {
-    addTextBubble("Could not save - browser storage is unavailable.", true, false);
-    return;
-  }
-  currentSavedId = entry.id;
-  renderSaved();
-}
-
-function openSaved(id) {
-  const c = readSaved().find((x) => x.id === id);
-  if (!c) return;
-  messages.innerHTML = "";
-  transcript = c.transcript.slice();
-  conversationId = c.conversationId;
-  currentSavedId = c.id;
-  for (const t of transcript) {
-    if (t.k === "user") addUserBubble(t.text, t.tag, false);
-    else if (t.k === "text") addTextBubble(t.text, t.err, false);
-    else if (t.k === "result") renderResult(t.d, false);
-  }
-  if (c.network) networkSelect.value = c.network;
-  networkSelect.disabled = true;
-  renderSaved();
-}
-
-function deleteSaved(id) {
-  if (!confirm("Delete this saved chat?")) return;
-  writeSaved(readSaved().filter((c) => c.id !== id));
-  if (currentSavedId === id) currentSavedId = null;
-  renderSaved();
-}
-
-saveChatBtn.addEventListener("click", saveCurrentChat);
-renderSaved();
 
 loadNetworks();
